@@ -12,6 +12,12 @@
 <body>
     <div class="header">
         <h1>Copypasta</h1>
+        <div id="board-controls">
+            <span id="board-name">Default Board</span>
+            <button id="load-board">Load Board</button>
+            <button id="create-board">Create Board</button>
+            <button id="export-board">Export Board</button>
+        </div>
         <form id="group-form">
             <input type="text" id="group-input" placeholder="Enter group name" required>
             <button type="submit">Add Group</button>
@@ -36,5 +42,8 @@
             </form>
         </div>
     </div>
+
+    <!-- File input for loading a board -->
+    <input type="file" id="board-file-input" style="display: none;">
 </body>
 </html>

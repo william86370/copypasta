@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const commandNameInput = document.getElementById('command-name');
     const commandTextInput = document.getElementById('command-text');
     const modalCloseButton = document.querySelector('.close-button');
+    const boardNameDisplay = document.getElementById('board-name');
+    const loadBoardButton = document.getElementById('load-board');
+    const createBoardButton = document.getElementById('create-board');
+    const exportBoardButton = document.getElementById('export-board');
+    const boardFileInput = document.getElementById('board-file-input');
     let currentGroup = null;
+    let currentBoard = 'Default Board';
 
     // Function to create a group
     window.createGroup = function createGroup(groupName) {
@@ -171,4 +177,93 @@ document.addEventListener('DOMContentLoaded', () => {
             blurEffect.remove();
         }, 1000); // Display message for 1 second
     }
+
+    // Load board from file
+    function loadBoardFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const data = JSON.parse(event.target.result);
+            loadBoard(data);
+        };
+        reader.readAsText(file);
+    }
+
+    // Load board data
+    function loadBoard(data) {
+        groupsContainer.innerHTML = '';
+        data.groups.forEach(group => {
+            const newGroup = createGroup(group.name);
+            newGroup.style.transform = `translate(${group.position.x}px, ${group.position.y}px)`;
+            newGroup.style.width = `${group.size.width}px`;
+            newGroup.style.height = `${group.size.height}px`;
+
+            group.commands.forEach(command => {
+                const li = document.createElement('li');
+                li.classList.add('command');
+                li.textContent = command.name;
+                li.dataset.commandText = command.text;
+
+                li.addEventListener('click', () => {
+                    navigator.clipboard.writeText(command.text).then(() => {
+                        showCopiedMessage(li);
+                    });
+                });
+
+                newGroup.querySelector('.command-list').appendChild(li);
+            });
+        });
+        boardNameDisplay.textContent = data.boardName || 'Default Board';
+    }
+
+    // Export board data to file
+    function exportBoardToFile() {
+        const groups = Array.from(document.querySelectorAll('.group')).map(group => ({
+            name: group.querySelector('h2').textContent,
+            position: {
+                x: parseFloat(group.dataset.x) || 0,
+                y: parseFloat(group.dataset.y) || 0,
+            },
+            size: {
+                width: group.offsetWidth,
+                height: group.offsetHeight,
+            },
+            commands: Array.from(group.querySelectorAll('.command')).map(command => ({
+                name: command.textContent,
+                text: command.dataset.commandText,
+            })),
+        }));
+
+        const configuration = {
+            boardName: boardNameDisplay.textContent,
+            groups,
+        };
+
+        const blob = new Blob([JSON.stringify(configuration, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${configuration.boardName}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Event listeners for board controls
+    loadBoardButton.addEventListener('click', () => boardFileInput.click());
+    boardFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            loadBoardFromFile(file);
+        }
+    });
+
+    createBoardButton.addEventListener('click', () => {
+        const newBoardName = prompt('Enter new board name:');
+        if (newBoardName) {
+            groupsContainer.innerHTML = '';
+            boardNameDisplay.textContent = newBoardName;
+            createGroup('Default Group').classList.add('active');
+        }
+    });
+
+    exportBoardButton.addEventListener('click', exportBoardToFile);
 });
