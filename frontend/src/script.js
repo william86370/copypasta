@@ -21,16 +21,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const group = document.createElement('div');
         group.classList.add('group');
         group.innerHTML = `
-            <h2>${groupName}</h2>
+            <h2>${groupName}
+                <div class="group-controls">
+                    <i class="fas fa-th-large view-toggle-btn"></i>
+                    <i class="fas fa-lock-open lock-btn"></i>
+                </div>
+            </h2>
             <button class="add-command-btn">Add Command</button>
             <ul class="command-list"></ul>
             <div class="resize-handle"></div>
         `;
 
         const addCommandButton = group.querySelector('.add-command-btn');
+        const viewToggleButton = group.querySelector('.view-toggle-btn');
+        const lockButton = group.querySelector('.lock-btn');
+        const commandList = group.querySelector('.command-list');
+
         addCommandButton.addEventListener('click', () => {
             currentGroup = group;
             openModal();
+        });
+
+        viewToggleButton.addEventListener('click', () => {
+            commandList.classList.toggle('list-view');
+        });
+
+        lockButton.addEventListener('click', () => {
+            const isLocked = group.classList.toggle('locked');
+            lockButton.classList.toggle('fa-lock', isLocked);
+            lockButton.classList.toggle('fa-lock-open', !isLocked);
+            if (isLocked) {
+                interact(group).draggable(false).resizable(false);
+            } else {
+                enableInteractions(group);
+            }
         });
 
         group.addEventListener('click', (e) => {
