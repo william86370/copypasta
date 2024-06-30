@@ -97,7 +97,8 @@ body {
     background: #2e2e2e;
     padding: 10px;
     border-radius: 8px;
-    min-width: 200px;
+    min-width: 300px;
+    min-height: 100px;
     width: calc(33.333% - 20px);
     position: relative;
     user-select: none;
@@ -132,7 +133,7 @@ body {
 
 .group h2 .group-controls i {
     cursor: pointer;
-    font-size: 1em;
+    font-size: .7em;
     padding: 5px;
     border-radius: 4px;
     transition: background-color 0.3s ease;
@@ -344,3 +345,7 @@ ul.command-list {
 .add-command-btn:hover {
     background-color: #218838;
 } */
+
+i.fas.fa-solid.fa-pen.edit-command-btn {
+    padding-left: 10px;
+}

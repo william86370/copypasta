@@ -8,12 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const commandNameInput = document.getElementById('command-name');
     const commandTextInput = document.getElementById('command-text');
     const modalCloseButton = document.querySelector('.close-button');
+    const editGroupModal = document.getElementById('edit-group-modal');
+    const editGroupNameInput = document.getElementById('edit-group-name');
+    const closeEditGroupModalButton = document.getElementById('close-edit-modal');
+    const editGroupForm = document.getElementById('edit-group-form');
+    const editCommandModal = document.getElementById('edit-command-modal');
+    const editCommandNameInput = document.getElementById('edit-command-name');
+    const editCommandTextInput = document.getElementById('edit-command-text');
+    const closeEditCommandModalButton = document.getElementById('close-edit-command-modal');
+    const editCommandForm = document.getElementById('edit-command-form');
     const boardNameDisplay = document.getElementById('board-name');
     const loadBoardButton = document.getElementById('load-board');
     const createBoardButton = document.getElementById('create-board');
     const exportBoardButton = document.getElementById('export-board');
     const boardFileInput = document.getElementById('board-file-input');
     let currentGroup = null;
+    let currentCommand = null;
     let currentBoard = 'Default Board';
 
     // Function to create a group
@@ -24,16 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2>${groupName}
                 <div class="group-controls">
                     <i class="fas fa-solid fa-plus add-command-btn"></i>
+                    <i class="fas fa-solid fa-pen edit-group-btn"></i>
                     <i class="fas fa-th-large view-toggle-btn"></i>
                     <i class="fas fa-lock-open lock-btn"></i>
                 </div>
             </h2>
-
             <ul class="command-list"></ul>
             <div class="resize-handle"></div>
         `;
 
         const addCommandButton = group.querySelector('.add-command-btn');
+        const editGroupNameButton = group.querySelector('.edit-group-btn');
         const viewToggleButton = group.querySelector('.view-toggle-btn');
         const lockButton = group.querySelector('.lock-btn');
         const commandList = group.querySelector('.command-list');
@@ -41,6 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
         addCommandButton.addEventListener('click', () => {
             currentGroup = group;
             openModal();
+        });
+
+        editGroupNameButton.addEventListener('click', () => {
+            currentGroup = group;
+            openEditGroupModal();
         });
 
         viewToggleButton.addEventListener('click', () => {
@@ -59,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         group.addEventListener('click', (e) => {
-            if (!e.target.closest('.command-form') && !e.target.closest('.add-command-btn')) {
+            if (!e.target.closest('.command-form') && !e.target.closest('.add-command-btn') && !e.target.closest('.edit-group-btn')) {
                 if (currentGroup) {
                     currentGroup.classList.remove('active');
                 }
@@ -71,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         groupsContainer.appendChild(group);
         enableInteractions(group);
         return group;
-    }
+    };
 
     // Create default group
     const defaultGroup = createGroup('Default Group');
@@ -158,13 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const li = document.createElement('li');
         li.classList.add('command');
-        li.textContent = commandName;
+        li.innerHTML = `${commandName} <i class="fas fa-solid fa-pen edit-command-btn"></i>`;
         li.dataset.commandText = commandText;
 
-        li.addEventListener('click', () => {
-            navigator.clipboard.writeText(commandText).then(() => {
-                showCopiedMessage(li);
-            });
+        li.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-command-btn')) {
+                currentCommand = li;
+                openEditCommandModal(commandName, commandText);
+                e.stopPropagation(); // Prevent triggering the copy to clipboard action
+            } else {
+                navigator.clipboard.writeText(commandText).then(() => {
+                    showCopiedMessage(li);
+                });
+            }
         });
 
         currentGroup.querySelector('.command-list').appendChild(li);
@@ -172,10 +194,61 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal();
     });
 
+    function openEditGroupModal() {
+        editGroupNameInput.value = currentGroup.querySelector('h2').textContent.trim();
+        editGroupModal.style.display = 'flex';
+    }
+
+    function closeEditGroupModal() {
+        editGroupModal.style.display = 'none';
+    }
+
+    closeEditGroupModalButton.addEventListener('click', closeEditGroupModal);
+
+    editGroupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newGroupName = editGroupNameInput.value.trim();
+
+        if (newGroupName === '') return;
+
+        currentGroup.querySelector('h2').firstChild.textContent = newGroupName;
+        closeEditGroupModal();
+    });
+
+    function openEditCommandModal(name, text) {
+        editCommandNameInput.value = name;
+        editCommandTextInput.value = text;
+        editCommandModal.style.display = 'flex';
+    }
+
+    function closeEditCommandModal() {
+        editCommandModal.style.display = 'none';
+    }
+
+    closeEditCommandModalButton.addEventListener('click', closeEditCommandModal);
+
+    editCommandForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newCommandName = editCommandNameInput.value.trim();
+        const newCommandText = editCommandTextInput.value.trim();
+
+        if (newCommandName === '' || newCommandText === '') return;
+
+        currentCommand.innerHTML = `${newCommandName} <i class="fas fa-solid fa-pen edit-command-btn"></i>`;
+        currentCommand.dataset.commandText = newCommandText;
+        closeEditCommandModal();
+    });
+
     // Close modal when clicking outside of it
     window.addEventListener('click', (event) => {
         if (event.target === commandModal) {
             closeModal();
+        }
+        if (event.target === editGroupModal) {
+            closeEditGroupModal();
+        }
+        if (event.target === editCommandModal) {
+            closeEditCommandModal();
         }
     });
 
@@ -225,13 +298,19 @@ document.addEventListener('DOMContentLoaded', () => {
             group.commands.forEach(command => {
                 const li = document.createElement('li');
                 li.classList.add('command');
-                li.textContent = command.name;
+                li.innerHTML = `${command.name} <i class="fas fa-solid fa-pen edit-command-btn"></i>`;
                 li.dataset.commandText = command.text;
 
-                li.addEventListener('click', () => {
-                    navigator.clipboard.writeText(command.text).then(() => {
-                        showCopiedMessage(li);
-                    });
+                li.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('edit-command-btn')) {
+                        currentCommand = li;
+                        openEditCommandModal(command.name, command.text);
+                        e.stopPropagation(); // Prevent triggering the copy to clipboard action
+                    } else {
+                        navigator.clipboard.writeText(command.text).then(() => {
+                            showCopiedMessage(li);
+                        });
+                    }
                 });
 
                 newGroup.querySelector('.command-list').appendChild(li);
