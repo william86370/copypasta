@@ -10,6 +10,8 @@ COPY src/ /app
 # Copy the nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# Create the temp directory for the PID file
+RUN mkdir -p /tmp/nginx && chown -R nginx:nginx /tmp/nginx
 # Expose port 8080
 EXPOSE 8080
 
