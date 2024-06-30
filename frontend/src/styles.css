@@ -103,6 +103,11 @@ body {
     position: relative;
     user-select: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 1; /* Default z-index for non-active groups */
+}
+
+.group.active {
+    z-index: 10; /* Higher z-index for active group */
 }
 
 .group .resize-handle {
@@ -295,12 +300,16 @@ body {
     background-color: #218838;
 }
 
-.modal-buttons #close-modal {
+.modal-buttons #close-modal,
+.modal-buttons #close-edit-command-modal,
+.modal-buttons #delete-command {
     background-color: #dc3545;
     color: white;
 }
 
-.modal-buttons #close-modal:hover {
+.modal-buttons #close-modal:hover,
+.modal-buttons #close-edit-command-modal:hover,
+.modal-buttons #delete-command:hover {
     background-color: #c82333;
 }
 
@@ -348,4 +357,16 @@ ul.command-list {
 
 i.fas.fa-solid.fa-pen.edit-command-btn {
     padding-left: 10px;
+}
+
+.color-picker-container {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-picker-container label {
+    font-size: 14px;
+    color: #ffffff;
 }

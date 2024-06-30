@@ -8,6 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
     <script src="script.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
 </head>
 <body>
     <div class="header">
@@ -50,6 +52,10 @@
             <h2>Edit Group Name</h2>
             <form id="edit-group-form">
                 <input type="text" id="edit-group-name" placeholder="Enter new group name" required>
+                <div class="color-picker-container">
+                    <label>Select Group Color:</label>
+                    <div id="group-color-picker"></div>
+                </div>
                 <div class="modal-buttons">
                     <button type="submit">Save</button>
                     <button type="button" id="close-edit-modal">Cancel</button>

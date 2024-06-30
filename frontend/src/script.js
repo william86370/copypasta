@@ -25,11 +25,54 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentGroup = null;
     let currentCommand = null;
     let currentBoard = 'Default Board';
+    let currentGroupColor = '#2e2e2e'; // Default color for new groups
+
+    // Initialize Pickr for color selection
+    const pickr = Pickr.create({
+        el: '#group-color-picker',
+        theme: 'nano', // or 'classic', 'monolith', 'nano'
+        default: currentGroupColor,
+        swatches: [
+            '#F44336', '#E91E63', '#9C27B0', '#673AB7',
+            '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4',
+            '#009688', '#4CAF50', '#8BC34A', '#CDDC39',
+            '#FFEB3B', '#FFC107', '#FF9800', '#FF5722',
+            '#795548', '#9E9E9E', '#607D8B', '#000000'
+        ],
+        components: {
+            preview: true,
+            opacity: true,
+            hue: true,
+            interaction: {
+                hex: true,
+                rgba: true,
+                hsla: true,
+                hsva: true,
+                cmyk: true,
+                input: true,
+                clear: true,
+                save: true
+            }
+        }
+    });
+
+    pickr.on('change', (color) => {
+        currentGroupColor = color.toHEXA().toString();
+    });
+
+    pickr.on('save', (color) => {
+        currentGroupColor = color.toHEXA().toString();
+        if (currentGroup) {
+            currentGroup.style.backgroundColor = currentGroupColor;
+        }
+        pickr.hide();
+    });
 
     // Function to create a group
-    window.createGroup = function createGroup(groupName) {
+    window.createGroup = function createGroup(groupName, groupColor = currentGroupColor) {
         const group = document.createElement('div');
         group.classList.add('group');
+        group.style.backgroundColor = groupColor;
         group.innerHTML = `
             <h2>${groupName}
                 <div class="group-controls">
@@ -196,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openEditGroupModal() {
         editGroupNameInput.value = currentGroup.querySelector('h2').textContent.trim();
+        pickr.setColor(currentGroup.style.backgroundColor);
         editGroupModal.style.display = 'flex';
     }
 
@@ -212,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (newGroupName === '') return;
 
         currentGroup.querySelector('h2').firstChild.textContent = newGroupName;
+        currentGroup.style.backgroundColor = currentGroupColor;
         closeEditGroupModal();
     });
 
@@ -290,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadBoard(data) {
         groupsContainer.innerHTML = '';
         data.groups.forEach(group => {
-            const newGroup = createGroup(group.name);
+            const newGroup = createGroup(group.name, group.color);
             newGroup.style.transform = `translate(${group.position.x}px, ${group.position.y}px)`;
             newGroup.style.width = `${group.size.width}px`;
             newGroup.style.height = `${group.size.height}px`;
@@ -323,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function exportBoardToFile() {
         const groups = Array.from(document.querySelectorAll('.group')).map(group => ({
             name: group.querySelector('h2').textContent,
+            color: group.style.backgroundColor,
             position: {
                 x: parseFloat(group.dataset.x) || 0,
                 y: parseFloat(group.dataset.y) || 0,
