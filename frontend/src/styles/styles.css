@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+@import url("./fonts.css");
 
 body {
     font-family: 'Roboto', sans-serif;
@@ -97,7 +97,7 @@ body {
     background: #2e2e2e;
     padding: 10px;
     border-radius: 8px;
-    min-width: 300px;
+    min-width: 350px;
     min-height: 100px;
     width: calc(33.333% - 20px);
     position: relative;
@@ -306,10 +306,17 @@ body {
     background-color: #dc3545;
     color: white;
 }
+.modal-buttons #delete-group {
+    background-color: #dc3545;
+    color: white;
+}
 
 .modal-buttons #close-modal:hover,
 .modal-buttons #close-edit-command-modal:hover,
 .modal-buttons #delete-command:hover {
+    background-color: #c82333;
+}
+.modal-buttons #delete-group:hover {
     background-color: #c82333;
 }
 

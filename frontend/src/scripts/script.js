@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fas fa-solid fa-pen edit-group-btn"></i>
                     <i class="fas fa-th-large view-toggle-btn"></i>
                     <i class="fas fa-lock-open lock-btn"></i>
+                    <i class="fas fa-trash delete-group-btn"></i>
                 </div>
             </h2>
             <ul class="command-list"></ul>
@@ -91,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const editGroupNameButton = group.querySelector('.edit-group-btn');
         const viewToggleButton = group.querySelector('.view-toggle-btn');
         const lockButton = group.querySelector('.lock-btn');
+        const deleteGroupButton = group.querySelector('.delete-group-btn');
         const commandList = group.querySelector('.command-list');
 
         addCommandButton.addEventListener('click', () => {
@@ -116,6 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 enableInteractions(group);
             }
+        });
+
+        deleteGroupButton.addEventListener('click', () => {
+            group.remove();
         });
 
         group.addEventListener('click', (e) => {
