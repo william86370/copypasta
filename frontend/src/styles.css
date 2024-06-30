@@ -326,3 +326,21 @@ body {
 .command-list.list-view {
     flex-direction: column;
 }
+
+ul.command-list {
+    padding-inline-start: 10px;
+}
+/* 
+.add-command-btn  {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #28a745;
+    color: white;
+}
+
+
+.add-command-btn:hover {
+    background-color: #218838;
+} */

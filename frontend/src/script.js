@@ -23,11 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         group.innerHTML = `
             <h2>${groupName}
                 <div class="group-controls">
+                    <i class="fas fa-solid fa-plus add-command-btn"></i>
                     <i class="fas fa-th-large view-toggle-btn"></i>
                     <i class="fas fa-lock-open lock-btn"></i>
                 </div>
             </h2>
-            <button class="add-command-btn">Add Command</button>
+
             <ul class="command-list"></ul>
             <div class="resize-handle"></div>
         `;
