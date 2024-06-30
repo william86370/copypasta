@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editCommandNameInput = document.getElementById('edit-command-name');
     const editCommandTextInput = document.getElementById('edit-command-text');
     const closeEditCommandModalButton = document.getElementById('close-edit-command-modal');
+    const deleteCommandButton = document.getElementById('delete-command');
     const editCommandForm = document.getElementById('edit-command-form');
     const boardNameDisplay = document.getElementById('board-name');
     const loadBoardButton = document.getElementById('load-board');
@@ -272,6 +273,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeEditCommandModalButton.addEventListener('click', closeEditCommandModal);
 
+    deleteCommandButton.addEventListener('click', () => {
+        if (currentCommand) {
+            currentCommand.remove();
+            closeEditCommandModal();
+        }
+    });
+
     editCommandForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const newCommandName = editCommandNameInput.value.trim();
@@ -308,9 +316,9 @@ document.addEventListener('DOMContentLoaded', () => {
         copiedMessage.style.position = 'absolute';
         copiedMessage.style.top = '50%';
         copiedMessage.style.left = '50%';
-        copiedMessage.style.transform = 'translate(-50%, -50%)';
+        copiedMessage.style.transform = `translate(-50%, -50%)`;
         copiedMessage.style.zIndex = '10';
-        
+
         const blurEffect = document.createElement('div');
         blurEffect.classList.add('blur-effect');
         element.appendChild(blurEffect);
@@ -324,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load board from file
     function loadBoardFromFile(file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             const data = JSON.parse(event.target.result);
             loadBoard(data);
         };
